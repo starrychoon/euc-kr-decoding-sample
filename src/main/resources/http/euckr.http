@@ -1,0 +1,18 @@
+POST http://localhost:8080/euc-kr/text
+Content-Type: text/plain
+
+< euckr-sample.txt
+
+###
+
+POST http://localhost:8080/euc-kr/json
+Content-Type: application/json
+
+< euckr-sample.json
+
+###
+
+POST http://localhost:8080/euc-kr/form
+Content-Type: application/x-www-form-urlencoded
+
+< euckr-sample.form
