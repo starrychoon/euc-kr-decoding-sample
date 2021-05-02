@@ -24,6 +24,9 @@ fun FormData(size: Int): FormData {
     return LinkedMultiValueMap(size)
 }
 
+/**
+ * @author Sungchoon Park
+ */
 object ExtendedCharsets {
     @JvmField
     val EUC_KR: Charset = charset("EUC-KR")
@@ -31,6 +34,8 @@ object ExtendedCharsets {
 
 /**
  * marker type for ecu-kr encoded form data
+ *
+ * @author Sungchoon Park
  */
 private object EucKrFormDataType
 
@@ -55,7 +60,7 @@ object EucKrBodyExtractors {
         Mono.just<FormData>(CollectionUtils.unmodifiableMultiValueMap(FormData(0))).cache()
 
     /**
-     * form data를 euc-kr로 디코딩해 [FormData] 형식으로 변환하는 [BodyExtractor]를 반환한다
+     * form data를 [euc-kr][ExtendedCharsets.EUC_KR]로 디코딩해 [FormData]로 변환하는 [BodyExtractor]를 반환한다
      *
      * [ServerRequest.formData][org.springframework.web.reactive.function.server.ServerRequest.formData]와 다르게
      * 한번 읽은 form data를 캐싱하지 않는다
@@ -99,12 +104,21 @@ object EucKrBodyExtractors {
     }
 }
 
+/**
+ * [EUC-KR][ExtendedCharsets.EUC_KR]을 [defaultCharset]으로 사용하는 [FormHttpMessageReader]
+ *
+ * @author Sungchoon Park
+ */
 class EucKrFormHttpMessageReader : FormHttpMessageReader() {
 
     init {
         super.setDefaultCharset(ExtendedCharsets.EUC_KR)
     }
 
+    /**
+     * [BaseDefaultCodecs.getTypedReaders][org.springframework.http.codec.support.BaseDefaultCodecs.getTypedReaders]에서 기본으로
+     * 등록하는 form reader와 충돌되지 않도록 [elementType]은 [EucKrFormDataType]만 지원한다
+     */
     override fun canRead(elementType: ResolvableType, mediaType: MediaType?): Boolean {
         return EUC_KR_FORM_DATA_TYPE.isAssignableFrom(elementType) &&
                 (mediaType == null || MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(mediaType))

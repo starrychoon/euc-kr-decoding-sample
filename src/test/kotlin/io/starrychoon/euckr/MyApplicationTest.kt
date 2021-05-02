@@ -45,6 +45,29 @@ class MyApplicationTest {
         assertTrue(expected2 in stdout)
     }
 
+    @Test
+    fun `EucKrBodyExtractors를 사용하지 않고 직접 디코딩해도 결과는 동일하다`(output: CapturedOutput) {
+        val expected1 = "Hello Kotlin"
+        val expected2 = "이것도 가능해야한다"
+        val formData = FormData(2)
+        formData.add("text_en", expected1)
+        formData.add("hidden", null)
+        formData.add("text_kr", expected2)
+        val bytes = serializeForm(formData, ExtendedCharsets.EUC_KR).toByteArray(ExtendedCharsets.EUC_KR)
+
+        webTestClient.post()
+            .uri("http://localhost:8080/euc-kr/form2")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .bodyValue(bytes)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().isEmpty
+
+        val stdout = output.out
+        assertTrue(expected1 in stdout)
+        assertTrue(expected2 in stdout)
+    }
+
     private fun serializeForm(formData: FormData, charset: Charset): String = buildString {
         formData.forEach { (name, values) ->
             values.forEach {

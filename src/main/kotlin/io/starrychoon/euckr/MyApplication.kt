@@ -7,6 +7,9 @@ import org.springframework.boot.web.codec.*
 import org.springframework.context.annotation.*
 import org.springframework.web.reactive.function.server.*
 
+/**
+ * @author Sungchoon Park
+ */
 @SpringBootApplication
 class MyApplication {
 
@@ -29,6 +32,7 @@ class MyApplication {
             POST("/text", myHandler::readEucKrTextRequest)
             POST("/json", myHandler::readEucKrJsonRequest)
             POST("/form", myHandler::readEucKrFormRequest)
+            POST("/form2", myHandler::readEucKrFormRequest2)
         }
     }
 }
